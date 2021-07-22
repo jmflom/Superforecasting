@@ -18,7 +18,7 @@ with open(filename, 'r') as csvfile:
 
     prices = [] # list of historical prices
 
-    historical_cutoff = 20 # how many years back are we considering
+    historical_cutoff = 50 # how many years back are we considering
     for row in csvreader:
         dte = parser.parse(row[0]) # date of this price
         
