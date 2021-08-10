@@ -48,7 +48,7 @@ gains_mean_onemo, gains_std_onemo = np.mean(np_gains_onemo), np.std(np_gains_one
 buckets_fourmo = [0, 0, 0, 0, 0]
 buckets_onemo = [0, 0, 0, 0, 0]
 X = 1000000
-curr_value = n
+curr_value = 267.7513
 
 
 for i in range(X):
