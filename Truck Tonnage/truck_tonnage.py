@@ -23,40 +23,43 @@ for data in response:
         if(dte > datetime.now() - timedelta(weeks=(52*historical_cutoff))):
             truck_tonnage.append(float(data['truck_tonnage_index']))
 
-percent_gains_sixmo = get_pct_gains(truck_tonnage, 6) # np.array of rolling 7-month % gains (jul, aug, sep, oct, nov, dec)
+percent_gains_fivemo = get_pct_gains(truck_tonnage, 5) # np.array of rolling 5-month % gains (aug, sep, oct, nov, dec)
 percent_gains_onemo = get_pct_gains(truck_tonnage, 1) # np.array of rolling 1-month % gains
 
-gains_mean_sixmo, gains_std_sixmo = np.mean(percent_gains_sixmo), np.std(percent_gains_sixmo)
+# hist = np.histogram(percent_gains_onemo, 6)
+# print(hist)
+
+gains_mean_fivemo, gains_std_fivemo = np.mean(percent_gains_fivemo), np.std(percent_gains_fivemo)
 gains_mean_onemo, gains_std_onemo = np.mean(percent_gains_onemo), np.std(percent_gains_onemo)
 
 ## run monte carlo simulation for diff buckets using normal sampling
 ## of percentage gain (1+that sample)
 ## RUN X times and categorize probability of each bin
-above120_sixmo = 0
+above120_fivemo = 0
 above120_onemo = 0
 X = 1000000
-curr_value = 112
+curr_value = 110
 
 for i in range(X):
     # six month estimate using normal distribution
-    tonnage_estimate_sixmo = (1 + (np.random.normal(gains_mean_sixmo, gains_std_sixmo)/100)) * curr_value
+    tonnage_estimate_fivemo = (1 + (np.random.normal(gains_mean_fivemo, gains_std_fivemo)/100)) * curr_value
     
     ## random walk from one month normal distribution to estimate
-    ## the six month change
+    ## the five month change
     tonnage_estimate_onemo = curr_value
     for j in range(5):
         tonnage_estimate_onemo *= (1 + (np.random.normal(gains_mean_onemo, gains_std_onemo)/100))
 
     if tonnage_estimate_onemo > 120:
         above120_onemo += 1
-    if tonnage_estimate_sixmo > 120:
-        above120_sixmo += 1
+    if tonnage_estimate_fivemo > 120:
+        above120_fivemo += 1
 
 probability_onemo = round(100*above120_onemo/X, 3)
-probability_sixmo = round(100*above120_sixmo/X, 3)
+probability_fivemo = round(100*above120_fivemo/X, 3)
 
 
-print("Six Month Rolling Prob.:", probability_sixmo)
+print("Six Month Rolling Prob.:", probability_fivemo)
 print("One Month Rolling Prob.:", probability_onemo)
 
 
